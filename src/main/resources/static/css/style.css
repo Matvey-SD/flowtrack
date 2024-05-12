@@ -1,0 +1,62 @@
+body.inactive {
+    overflow: hidden;
+}
+
+.header-img {
+    height: 36px;
+    transform: scaleX(-1);
+}
+
+.nav-item {
+    border-radius: 10px;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    padding: 5px 10px;
+    font-size: 24px;
+    margin-left: 15px;
+}
+
+.nav-item-img {
+    line-height: 0;
+}
+
+label {
+    user-select: none;
+}
+
+.wrapper {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.popup-menu {
+    display: none;
+}
+
+.popup-menu.active {
+    display: inline;
+}
+
+.modal-window {
+    display: none;
+    position: fixed;
+    width: 20%;
+    left: 40%;
+    top: 20%;
+}
+
+.modal-window.active {
+    display: block;
+    background-color: #5c636a;
+    overflow: visible;
+}
+
+.menu-wrapper {
+    display: none;
+}
+
+.menu-wrapper.active {
+    display: inline;
+}

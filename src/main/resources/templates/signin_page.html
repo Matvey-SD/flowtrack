@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<div th:replace="~{/fragments/header :: head}"></div>
+<body>
+<div class="d-flex flex-column align-items-sm-stretch justify-content-center w-25 m-auto mt-3">
+    <form class="mb-3" action="/signIn" method="post">
+        <div class="mb-3 form-floating">
+            <input class="form-control" name="login" id="login" placeholder="" required="required">
+            <label for="login">Логин</label>
+        </div>
+        <div class="mb-3 form-floating">
+            <input class="form-control" name="password" id="password" placeholder="" required="required" type="password">
+            <label for="password">Пароль</label>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Войти</button>
+    </form>
+    <a href="/signUp">
+        <button type="submit" class="btn btn-warning w-100">Создать новый аккаунт</button>
+    </a>
+</div>
+<div th:replace="~{/fragments/footer}"></div>

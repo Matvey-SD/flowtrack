@@ -1,0 +1,8 @@
+<div id="settings-page-wrapper" class="menu-wrapper">
+    <form action="/delete-team" method="post">
+        <label>
+            <input type="hidden" name="team-id" th:value="${team.getId()}">
+        </label>
+        <button type="submit">Удалить команду</button>
+    </form>
+</div>

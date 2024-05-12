@@ -1,0 +1,16 @@
+<div th:replace="~{fragments/header}"></div>
+<h1 th:text="${team.getTeam_name()}"></h1>
+<button id="desk-page-button" class="menu-show-button" onclick="openDeskPage()" disabled>Доска задач</button>
+<button id="members-page-button" class="menu-show-button" onclick="openMembersPage()">Список участников</button>
+<button id="roles-page-button" class="menu-show-button" onclick="openRolesPage()">Список ролей</button>
+<button id="docs-page-button" class="menu-show-button" onclick="openDocsPage()">Документы</button>
+<button id="settings-page-button" class="menu-show-button" onclick="openSettingsPage()">Настройки</button>
+<div th:replace="~{fragments/teampage/deskpage}"></div>
+<div th:replace="~{fragments/teampage/memberspage}"></div>
+<div th:replace="~{fragments/teampage/rolepage}"></div>
+<div th:replace="~{fragments/teampage/docpage}"></div>
+<div th:replace="~{fragments/teampage/settingspage}"></div>
+<div th:replace="~{fragments/teampage/cardmodal}"></div>
+<div th:replace="~{fragments/teampage/rolemodal}"></div>
+<script type="text/javascript" th:src="@{/js/teamPageScript.js}"></script>
+<div th:replace="~{fragments/footer}"></div>

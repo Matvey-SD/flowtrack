@@ -1,0 +1,9 @@
+<div id="roles-page-wrapper" class="menu-wrapper">
+    <div id="role-list">
+        <div onclick="openRoleModal(this.id)" th:each="role : ${team.getRoles()}" class="role"
+             th:id="${role.getId()}">
+            <div class="role-name" th:id="'role-' + ${role.getId()}" th:text="${role.getRoleName()}"></div>
+        </div>
+    </div>
+    <button onclick="openRoleModalNew()">Создать новую роль</button>
+</div>

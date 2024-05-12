@@ -1,0 +1,11 @@
+<div id="docs-page-wrapper" class="menu-wrapper">
+    <div id="documents-list">
+        <div onclick="downloadDocument(this.id)" th:each="document : ${team.getDocuments()}" class="document"
+             th:id="${document.getId()}">
+            <div class="document-name" th:id="'doc-' + ${document.getId()}" th:text="${document.getFileName()}"></div>
+            <div class="document-size" th:text="${document.getHumanReadableSize()}"></div>
+        </div>
+    </div>
+    <input id="uploading-document" name="file" type="file">
+    <button onclick="saveDocument()" id="submit-uploading-document">Загрузить документ</button>
+</div>

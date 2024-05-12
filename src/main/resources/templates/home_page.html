@@ -1,0 +1,30 @@
+<div th:replace="~{fragments/header}"></div>
+<h1 th:text="'Привет, ' + ${user.getLogin()}"></h1>
+<div th:if="${user.getTeams().isEmpty()}">
+    <div>У вас нет команд!:(</div>
+</div>
+<div th:unless="${user.getTeams().isEmpty()}">
+    <div th:each="userTeam : ${user.getTeams()}">
+        <a th:href="'/team?id=' + ${userTeam.getTeam().getId()}">
+            <div th:text="${userTeam.getTeam().getTeam_name()}"></div>
+        </a>
+    </div>
+</div>
+<div>
+    <a href="/team-creation">
+        <button type="submit">Создать команду</button>
+    </a>
+</div>
+<div class="mb-3">
+    <div class="mb-3 form-floating">
+        <input class="form-control" name="mail" id="mail" th:value="${user.getMail()}">
+        <label for="mail">Email пользователя</label>
+    </div>
+    <div class="mb-3 form-floating">
+        <input class="form-control" name="fullName" id="fullName"  th:value="${user.getFullName()}">
+        <label for="fullName">ФИО пользователя</label>
+    </div>
+    <button id="submit-user-button" class="btn btn-success w-100">Обновить данные пользователя</button>
+</div>
+<script type="text/javascript" th:src="@{/js/homePageScript.js}"></script>
+<div th:replace="~{fragments/footer}"></div>

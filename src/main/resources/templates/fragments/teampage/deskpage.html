@@ -1,0 +1,37 @@
+<div id="desk-page-wrapper" class="menu-wrapper active">
+    <div class="column-wrapper" id="column-wrapper">
+        <div class="column" th:each="column : ${team.getUnhiddenColumns()}" th:id="${column.getId()}">
+            <div class="column-title" th:text="${column.getName()}" th:id="'title-' + ${column.getId()}"></div>
+            <div class="cards-wrapper" th:id="'cards-wrapper-' + ${column.getId()}">
+                <div draggable="true" onclick="openCardModal(this.id)" class="card" th:each="card : ${column.getCards()}"
+                     th:id="${card.getId()}">
+                    <div th:text="${card.getCardName()}" th:id="'cardname-' + ${card.getId()}"></div>
+                    <div th:if="${card.getDoerLogin() == user.getLogin()}">Назначено на исполнение</div>
+                    <div th:if="${card.getCheckerLogin() == user.getLogin()}">Назначено на проверку</div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <label th:for="'card-'+${column.getId()}">
+                        <input name="card-name" th:id="'card-'+${column.getId()}"
+                               placeholder="Введите описание карточки" required="required">
+                    </label>
+                </div>
+                <button onclick="addCardToColumn(this.id)" class="add-card-button" th:id="${column.getId()}">Добавить карточку
+                </button>
+            </div>
+        </div>
+    </div>
+    <button onclick="openColumnPopup()" id="column-popup-button">Добавить колонку</button>
+    <div class="popup-menu" id="column-popup">
+        <button onclick="closeColumnPopup()" id="column-popup-close-button">Закрыть</button>
+        <div class="mb-3">
+            <div class="mb-3 form-floating">
+                <input class="form-control" name="column-name" id="column-name" placeholder="" required="required">
+                <label for="column-name">Название столбца</label>
+            </div>
+            <button onclick="addColumnIfPossible()" id="submit-column-button" class="btn btn-success w-100">Добавить колонку
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div id="member-page-wrapper" class="menu-wrapper">
+    <div class="members-wrapper" id="members-wrapper">
+        <div th:each="teamMember : ${team.getMembers()}">
+            <label>
+                <select th:disabled="${teamMember.getRole().isOwner()}" th:id="${teamMember.getId()}"
+                        onchange="changeUserRole(this)" class="user-role-select">
+                    <option th:each="role: ${team.getRoles()}" th:value="${role.getId()}" th:text="${role.getRoleName()}"
+                            th:selected="${teamMember.getRole().getId().compareTo(role.getId()) == 0}"></option>
+                </select>
+            </label>
+            <div th:text="${teamMember.getUser().getLogin()}"></div>
+        </div>
+    </div>
+    <button onclick="openInvitePopup()" id="invite-popup-button">Добавить пользователей</button>
+    <div class="popup-menu" id="invite-popup">
+        <button onclick="closeInvitePopup()" id="popup-close-button">Закрыть</button>
+        <div class="mb-3">
+            <div class="mb-3 form-floating">
+                <input class="form-control" name="login" id="login" placeholder="" required="required">
+                <label for="login">Логин пользователя</label>
+            </div>
+            <button onclick="inviteUserIfPossible()" id="submit-login-button" class="btn btn-success w-100">Добавить
+                пользователя
+            </button>
+        </div>
+    </div>
+</div>
