@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sarapulov.demos.entities.ColumnAddingRequestDTO;
+import ru.sarapulov.demos.entities.ColumnPositionChangingDTO;
 import ru.sarapulov.demos.exceptions.UnauthorisedAccessException;
 import ru.sarapulov.demos.models.Column;
 import ru.sarapulov.demos.models.Role;
@@ -69,17 +70,56 @@ public class TeamService {
             throw new UnauthorisedAccessException();
         }
         UUID savedId = UUID.randomUUID();
-        Team team = teamsRepository.findTeamById(teamId);
+        Team team = requesterRole.getTeam();
+        int columnPosition = team.getColumns()
+                                 .size();
         Column columnToAdd = Column.builder()
                                    .name(columnName)
                                    .team(team)
                                    .columnType(columnType)
                                    .id(savedId)
+                                   .position(columnPosition)
                                    .build();
         team.getColumns()
             .add(columnToAdd);
         teamsRepository.save(team);
         return savedId;
+    }
+
+    public void changeColumnPosition(User requester, ColumnPositionChangingDTO positionChangingDTO) {
+        UUID teamId = positionChangingDTO.getTeamId();
+        Role requesterRole = UserUtils.getUserRoleInTeam(requester, teamId);
+        if (!requesterRole.isColumnEditAvailable()) {
+            throw new UnauthorisedAccessException();
+        }
+        Team team = requesterRole.getTeam();
+        int newPos = positionChangingDTO.getPosition();
+        List<Column> columns = team.getSortedColumns();
+        int prevPos = columns.stream()
+                             .filter(col -> col.getId()
+                                               .compareTo(positionChangingDTO.getColumnId()) == 0)
+                             .findFirst()
+                             .orElseThrow()
+                             .getPosition();
+        if (prevPos == newPos) {
+            return;
+        }
+        if (newPos > prevPos) {
+            for (int i = prevPos + 1; i < newPos + 1; i++) {
+                columns.get(i)
+                       .setPosition(i - 1);
+            }
+            columns.get(prevPos).setPosition(newPos);
+        }
+        if (newPos < prevPos) {
+            for (int i = newPos; i < prevPos; i++) {
+                columns.get(i)
+                       .setPosition(i + 1);
+            }
+            columns.get(prevPos).setPosition(newPos);
+        }
+
+        teamsRepository.save(team);
     }
 
     public void deleteTeam(User requester, UUID teamId) {

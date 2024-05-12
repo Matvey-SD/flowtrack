@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,12 +43,6 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Role> roles;
 
-    public List<Column> getUnhiddenColumns() {
-        return columns.stream()
-                      .filter(column -> !column.isHidden())
-                      .collect(Collectors.toList());
-    }
-
     public Role getDefaultRole() {
         return roles.stream()
                     .filter(Role::isDefaultRole)
@@ -62,6 +57,12 @@ public class Team {
         return builder().team_name(teamName)
                         .members(List.of(owner))
                         .build();
+    }
+
+    public List<Column> getSortedColumns() {
+        return columns.stream()
+                      .sorted(Comparator.comparingInt(Column::getPosition))
+                      .toList();
     }
 
 }

@@ -179,7 +179,9 @@ for (const cardsWrapper of cardsWrappers) {
     })
     cardsWrapper.addEventListener('dragend', (evt) => {
         evt.target.classList.remove('dragged')
-        updateCardPosition(evt.target);
+        if (evt.target.classList.contains('card')) {
+            updateCardPosition(evt.target);
+        }
     })
     cardsWrapper.addEventListener(`dragover`, (evt) => {
         evt.preventDefault();
@@ -187,7 +189,7 @@ for (const cardsWrapper of cardsWrappers) {
         const activeElement = document.querySelector('.dragged');
         const currentElement = evt.target;
         if (!(activeElement !== currentElement &&
-            currentElement.classList.contains(`card`))) {
+            currentElement.classList.contains('card') && activeElement.classList.contains('card'))) {
             return;
         }
 
@@ -199,12 +201,26 @@ for (const cardsWrapper of cardsWrappers) {
     });
 }
 
+function updateCardPosition(card) {
+    let columnId = card.parentElement.id.substring(14);
+    console.log('Updating card with id', card.id, 'to be in column with id', columnId);
+
+    makeRequest('update-card-position', {
+        'teamId': team, 'cardId': card.id, 'columnId': columnId
+    }).then(() => {
+        console.log('Success')
+    })
+}
+
 const columnTitles = document.getElementsByClassName("column-title");
 for (const columnTitle of columnTitles) {
     columnTitle.addEventListener(`dragover`, (evt) => {
         evt.preventDefault();
 
         const activeElement = document.querySelector('.dragged');
+        if (!activeElement.classList.contains('card'))
+            return;
+
         const currentWrapper = document.getElementById('cards-wrapper-' + evt.target.id.substring(6));
 
         if (currentWrapper.children.length === 0) {
@@ -215,13 +231,46 @@ for (const columnTitle of columnTitles) {
     })
 }
 
-function updateCardPosition(card) {
-    let columnId = card.parentElement.id.substring(14);
-    console.log('Updating card with id', card.id, 'to be in column with id', columnId);
+const columnsWrapper = document.getElementById('column-wrapper');
+columnsWrapper.addEventListener('dragstart', (evt) => {
+    evt.target.classList.add('dragged')
+})
+columnsWrapper.addEventListener('dragend', (evt) => {
+    evt.target.classList.remove('dragged')
+    if (evt.target.classList.contains('column')) {
+        updateColumnPosition(evt.target);
+    }
+})
 
-    makeRequest('update-card-position', {
-        'teamId': team, 'cardId': card.id, 'columnId': columnId
-    }).then(() => {
+columnsWrapper.addEventListener(`dragover`, (evt) => {
+    evt.preventDefault();
+
+    const activeElement = document.querySelector('.dragged');
+    const currentElement = evt.target;
+    console.log(currentElement.classList.value)
+    if (!(activeElement !== currentElement &&
+        currentElement.classList.contains(`column`) && activeElement.classList.contains('column'))) {
+        return;
+    }
+
+    const nextElement = (currentElement === activeElement.nextElementSibling) ?
+        currentElement.nextElementSibling :
+        currentElement;
+
+    columnsWrapper.insertBefore(activeElement, nextElement);
+});
+
+function updateColumnPosition(target) {
+    let wrapper = document.getElementById('column-wrapper');
+    let position = 0;
+    for (let i = 0; i < wrapper.children.length; i++) {
+        if (wrapper.children[i].id === target.id) {
+            position = i;
+            break;
+        }
+    }
+
+    makeRequest('update-column-position', {'columnId': target.id, 'teamId': team, 'position': position}).then(() => {
         console.log('Success')
     })
 }

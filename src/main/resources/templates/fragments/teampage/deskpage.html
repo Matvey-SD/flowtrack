@@ -1,12 +1,12 @@
 <div id="desk-page-wrapper" class="menu-wrapper active">
     <div class="column-wrapper" id="column-wrapper">
-        <div th:class="'column ' + ${column.getType()} " th:each="column : ${team.getUnhiddenColumns()}"
+        <div draggable="true" th:class="'column ' + ${column.getType()} " th:each="column : ${team.getSortedColumns()}"
              th:id="${column.getId()}">
             <div class="column-title" th:text="${column.getName()}" th:id="'title-' + ${column.getId()}"></div>
             <div class="cards-wrapper" th:id="'cards-wrapper-' + ${column.getId()}">
                 <div draggable="true" onclick="openCardModal(this.id)" class="card" th:each="card : ${column.getCards()}"
                      th:id="${card.getId()}">
-                    <div th:text="${card.getCardName()}" th:id="'cardname-' + ${card.getId()}"></div>
+                    <div class="cardname" th:text="${card.getCardName()}" th:id="'cardname-' + ${card.getId()}"></div>
                     <div th:if="${card.getDoerLogin() == user.getLogin()}">Назначено на исполнение</div>
                     <div th:if="${card.getCheckerLogin() == user.getLogin()}">Назначено на проверку</div>
                 </div>

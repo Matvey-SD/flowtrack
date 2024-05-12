@@ -34,9 +34,9 @@ public class Column {
 
     private String name;
 
-    private boolean isHidden;
-
     private int columnType;
+
+    private int position;
 
     @ManyToMany
     @JoinTable(name = "column_permissions", joinColumns = {@JoinColumn(name = "column_id")},
