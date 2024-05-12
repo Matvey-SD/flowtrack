@@ -36,6 +36,8 @@ public class Column {
 
     private boolean isHidden;
 
+    private int columnType;
+
     @ManyToMany
     @JoinTable(name = "column_permissions", joinColumns = {@JoinColumn(name = "column_id")},
                inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -52,6 +54,16 @@ public class Column {
                     .filter(card -> card.getId()
                                         .compareTo(cardId) == 0)
                     .findFirst();
+    }
+
+    public String getType() {
+        return switch (columnType) {
+            case 0 -> "backlog";
+            case 1 -> "inwork";
+            case 2 -> "oncheck";
+            case 3 -> "done";
+            default -> "";
+        };
     }
 
 }

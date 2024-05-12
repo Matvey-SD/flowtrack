@@ -43,7 +43,7 @@ public class RestTeamController {
                  columnAddingRequestDTO.getColumnName(),
                  columnAddingRequestDTO.getTeamId());
         UUID savedId =
-            teamService.addColumnToTeam(user, columnAddingRequestDTO.getColumnName(), columnAddingRequestDTO.getTeamId());
+            teamService.addColumnToTeam(user, columnAddingRequestDTO);
         return ResponseEntity.ok(savedId);
     }
 

@@ -14,4 +14,5 @@ import java.util.UUID;
 public class ColumnAddingRequestDTO {
     private String columnName;
     private UUID teamId;
+    private int columnType;
 }

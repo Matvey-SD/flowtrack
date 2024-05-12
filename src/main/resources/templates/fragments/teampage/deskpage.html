@@ -1,6 +1,7 @@
 <div id="desk-page-wrapper" class="menu-wrapper active">
     <div class="column-wrapper" id="column-wrapper">
-        <div class="column" th:each="column : ${team.getUnhiddenColumns()}" th:id="${column.getId()}">
+        <div th:class="'column ' + ${column.getType()} " th:each="column : ${team.getUnhiddenColumns()}"
+             th:id="${column.getId()}">
             <div class="column-title" th:text="${column.getName()}" th:id="'title-' + ${column.getId()}"></div>
             <div class="cards-wrapper" th:id="'cards-wrapper-' + ${column.getId()}">
                 <div draggable="true" onclick="openCardModal(this.id)" class="card" th:each="card : ${column.getCards()}"
@@ -30,6 +31,13 @@
                 <input autocomplete="off" class="form-control" name="column-name" id="column-name" placeholder=""
                        required="required">
                 <label for="column-name">Название столбца</label>
+                <select name="" id="column-type-selector">
+                    <option selected value="0">Запланированные задачи</option>
+                    <option value="1">В работе</option>
+                    <option value="2">На проверке</option>
+                    <option value="3">Выполненные</option>
+                </select>
+                <label for="column-type-selector"></label>
             </div>
             <button onclick="addColumnIfPossible()" id="submit-column-button" class="btn btn-success w-100">Добавить колонку
             </button>

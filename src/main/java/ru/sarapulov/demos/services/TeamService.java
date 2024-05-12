@@ -3,6 +3,7 @@ package ru.sarapulov.demos.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.sarapulov.demos.entities.ColumnAddingRequestDTO;
 import ru.sarapulov.demos.exceptions.UnauthorisedAccessException;
 import ru.sarapulov.demos.models.Column;
 import ru.sarapulov.demos.models.Role;
@@ -59,7 +60,10 @@ public class TeamService {
         teamsRepository.save(team);
     }
 
-    public UUID addColumnToTeam(User requester, String columnName, UUID teamId) {
+    public UUID addColumnToTeam(User requester, ColumnAddingRequestDTO columnAddingRequest) {
+        UUID teamId = columnAddingRequest.getTeamId();
+        String columnName = columnAddingRequest.getColumnName();
+        int columnType = columnAddingRequest.getColumnType();
         Role requesterRole = UserUtils.getUserRoleInTeam(requester, teamId);
         if (!requesterRole.isColumnEditAvailable()) {
             throw new UnauthorisedAccessException();
@@ -69,6 +73,7 @@ public class TeamService {
         Column columnToAdd = Column.builder()
                                    .name(columnName)
                                    .team(team)
+                                   .columnType(columnType)
                                    .id(savedId)
                                    .build();
         team.getColumns()

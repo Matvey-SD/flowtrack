@@ -60,3 +60,19 @@ label {
 .menu-wrapper.active {
     display: inline;
 }
+
+.backlog .column-title {
+    background-color: #0d6efd;
+}
+
+.inwork .column-title {
+    background-color: #0f5132;
+}
+
+.oncheck .column-title {
+    background-color: #ffc107;
+}
+
+.done .column-title {
+    background-color: olive;
+}

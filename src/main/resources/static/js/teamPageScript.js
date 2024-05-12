@@ -48,7 +48,8 @@ function closeColumnPopup() {
 
 function addColumnIfPossible() {
     let columnName = document.getElementById("column-name").value;
-    makeRequest('add-column', {"columnName": columnName, "teamId": team}).then(r => {
+    let columnType = document.getElementById('column-type-selector').value
+    makeRequest('add-column', {"columnName": columnName, "teamId": team, 'columnType': columnType}).then(r => {
         let columnNameDiv = document.createElement('div');
         columnNameDiv.innerText = columnName;
         let cardsDiv = document.createElement('div');
@@ -219,7 +220,7 @@ function updateCardPosition(card) {
     console.log('Updating card with id', card.id, 'to be in column with id', columnId);
 
     makeRequest('update-card-position', {
-        'teamId' : team, 'cardId' : card.id, 'columnId' : columnId
+        'teamId': team, 'cardId': card.id, 'columnId': columnId
     }).then(() => {
         console.log('Success')
     })
