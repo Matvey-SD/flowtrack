@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.sarapulov.demos.entities.FileRequestingDTO;
 import ru.sarapulov.demos.models.User;
 import ru.sarapulov.demos.services.DocumentService;
+import ru.sarapulov.demos.services.UserService;
 
 import java.util.UUID;
 
@@ -25,11 +26,13 @@ import java.util.UUID;
 public class RestFileController {
 
     private DocumentService documentService;
+    private UserService usersService;
 
     @PostMapping("/upload-file")
     public ResponseEntity<UUID> handleFileUpload(@AuthenticationPrincipal User user,
                                                  @RequestParam("file") MultipartFile file,
                                                  @RequestParam("team-id") UUID teamId) {
+        user = usersService.updateUser(user);
         UUID id = documentService.saveDocument(user, file, teamId);
 
         return ResponseEntity.ok(id);
@@ -41,6 +44,7 @@ public class RestFileController {
                                                      @RequestParam("file") MultipartFile file,
                                                      @RequestParam("team-id") UUID teamId,
                                                      @RequestParam("card-id") UUID cardId) {
+        user = usersService.updateUser(user);
         UUID id = documentService.saveCardDocument(user, file, teamId, cardId);
 
         return ResponseEntity.ok(id);
@@ -49,7 +53,7 @@ public class RestFileController {
     @PostMapping("/download-file")
     public ResponseEntity<Resource> downloadFile(@AuthenticationPrincipal User user,
                                                  @RequestBody FileRequestingDTO fileRequestingDTO) {
-
+        user = usersService.updateUser(user);
         Resource resource = documentService.loadDocument(user, fileRequestingDTO.getDocumentId(), fileRequestingDTO.getTeamId());
 
         return ResponseEntity.ok()
