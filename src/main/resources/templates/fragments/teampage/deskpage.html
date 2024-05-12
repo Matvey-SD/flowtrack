@@ -13,7 +13,7 @@
             <div>
                 <div>
                     <label th:for="'card-'+${column.getId()}">
-                        <input name="card-name" th:id="'card-'+${column.getId()}"
+                        <input autocomplete="off" name="card-name" th:id="'card-'+${column.getId()}"
                                placeholder="Введите описание карточки" required="required">
                     </label>
                 </div>
@@ -27,7 +27,8 @@
         <button onclick="closeColumnPopup()" id="column-popup-close-button">Закрыть</button>
         <div class="mb-3">
             <div class="mb-3 form-floating">
-                <input class="form-control" name="column-name" id="column-name" placeholder="" required="required">
+                <input autocomplete="off" class="form-control" name="column-name" id="column-name" placeholder=""
+                       required="required">
                 <label for="column-name">Название столбца</label>
             </div>
             <button onclick="addColumnIfPossible()" id="submit-column-button" class="btn btn-success w-100">Добавить колонку

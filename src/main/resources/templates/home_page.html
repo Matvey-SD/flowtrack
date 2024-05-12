@@ -17,11 +17,11 @@
 </div>
 <div class="mb-3">
     <div class="mb-3 form-floating">
-        <input class="form-control" name="mail" id="mail" th:value="${user.getMail()}">
+        <input autocomplete="off" class="form-control" name="mail" id="mail" th:value="${user.getMail()}">
         <label for="mail">Email пользователя</label>
     </div>
     <div class="mb-3 form-floating">
-        <input class="form-control" name="fullName" id="fullName"  th:value="${user.getFullName()}">
+        <input autocomplete="off" class="form-control" name="fullName" id="fullName" th:value="${user.getFullName()}">
         <label for="fullName">ФИО пользователя</label>
     </div>
     <button id="submit-user-button" class="btn btn-success w-100">Обновить данные пользователя</button>
