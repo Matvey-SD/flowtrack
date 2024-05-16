@@ -42,8 +42,8 @@ label {
 .modal-window {
     display: none;
     position: fixed;
-    width: 20%;
-    left: 40%;
+    width: 40%;
+    left: 30%;
     top: 20%;
 }
 
@@ -93,4 +93,8 @@ label {
 .column {
     width: 200px;
     margin-right: 30px;
+}
+
+.document {
+    cursor: pointer;
 }

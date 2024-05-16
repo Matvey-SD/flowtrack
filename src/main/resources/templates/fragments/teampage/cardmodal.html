@@ -1,29 +1,33 @@
 <div class="modal-window" id="card-modal">
     <label for="card-modal-id"></label><input type="hidden" id="card-modal-id" name="card-id">
-    <label for="card-modal-name"></label><input autocomplete="off" id="card-modal-name" name="card-name">
-    <label for="card-modal-desc"></label><input autocomplete="off" id="card-modal-desc" name="card-desc">
+    <label for="card-modal-name"></label><input autocomplete="off" id="card-modal-name" name="card-name"><br>
+    <label for="card-modal-desc"></label><input autocomplete="off" id="card-modal-desc" name="card-desc"><br>
     <label for="card-modal-doer">Исполнитель</label>
     <select id="card-modal-doer">
         <option value="">Не назначено</option>
         <option th:each="member : ${team.getMembers()}" th:value="${member.getUser().getLogin()}"
                 th:text="${member.getUser().getLogin()}"></option>
-    </select>
+    </select><br>
     <label for="card-modal-checker">Проверяющий</label>
     <select id="card-modal-checker">
         <option value="">Не назначено</option>
         <option th:each="member : ${team.getMembers()}" th:value="${member.getUser().getLogin()}"
                 th:text="${member.getUser().getLogin()}"></option>
-    </select>
+    </select><br>
     <div id="card-modal-tags"></div>
     <label for="card-modal-time-to-do">Ориентировочное время выполнения</label><input min="0" pattern="[0-9]+([\.,][05])?"
                                                                                       step="0.5" type="number" name=""
-                                                                                      id="card-modal-time-to-do">
+                                                                                      id="card-modal-time-to-do"><br>
     <div id="card-modal-documents"></div>
-    <input id="uploading-document-card" name="file" type="file">
+    <br>
+    <input id="uploading-document-card" name="file" type="file"><br>
     <button onclick="saveDocumentCard()" id="submit-uploading-document-card">Загрузить документ</button>
+    <br>
     <div id="card-modal-comments"></div>
     <button onclick="saveCardModal()" id="card-modal-save-button">Сохранить изменения</button>
+    <br>
     <label for="card-modal-comment"></label><input autocomplete="off" id="card-modal-comment" name="card-comment">
     <button onclick="saveCardComment()" id="card-modal-save-comment-button">Оставить комментарий</button>
+    <br>
     <button onclick="closeCardModal()" id="card-modal-close-button">Закрыть</button>
 </div>
