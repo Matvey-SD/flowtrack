@@ -33,8 +33,18 @@ public class TeamController {
     }
 
     @PostMapping("/team-creation")
-    public String teamCreation(@AuthenticationPrincipal User user, @RequestParam(name = "team-name") String teamName) {
-        teamService.createTeam(user, teamName);
+    public String teamCreation(@AuthenticationPrincipal User user,
+                               @RequestParam(name = "team-name") String teamName,
+                               @RequestParam(name = "copy-checkbox", required = false) boolean isCopied,
+                               @RequestParam(name = "copy-team", required = false) UUID teamToCopy,
+                               @RequestParam(name = "copy-roles", required = false) boolean copyRoles,
+                               @RequestParam(name = "copy-users", required = false) boolean copyUsers,
+                               @RequestParam(name = "copy-columns", required = false) boolean copyColumns) {
+        if (!isCopied) {
+            teamService.createTeam(user, teamName);
+        } else {
+            teamService.createCopiedTeam(user, teamName, teamToCopy, copyRoles, copyUsers, copyColumns);
+        }
         return "redirect:/home";
     }
 

@@ -17,7 +17,6 @@ import lombok.Setter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "teams")
@@ -46,6 +45,13 @@ public class Team {
     public Role getDefaultRole() {
         return roles.stream()
                     .filter(Role::isDefaultRole)
+                    .findFirst()
+                    .orElseThrow();
+    }
+
+    public Role getOwnerRole() {
+        return roles.stream()
+                    .filter(Role::isOwner)
                     .findFirst()
                     .orElseThrow();
     }

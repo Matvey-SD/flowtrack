@@ -6,7 +6,28 @@
                 <input autocomplete="off" name="team-name" placeholder="Введите название команды" required="required">
             </label>
         </div>
-        <button type="submit">Создать команду</button>
+        <div th:unless="${user.getTeams().isEmpty()}">
+            <label for="copy-checkbox">Использовать шаблон при создании команды?</label><input
+                onclick="changeTeamCopyVisibility(this)" type="checkbox"
+                name="copy-checkbox"
+                id="copy-checkbox">
+            <div class="hidden" id="copy-menu"><label for="copy-team-select">Выберете шаблон команды</label>
+                <select name="copy-team" id="copy-team-select">
+                    <option th:each="userTeam : ${user.getTeams()}" selected th:value="${userTeam.getTeam().getId()}"
+                            th:text="${userTeam.getTeam().getTeam_name()}"></option>
+                </select><br>
+                <label for="copy-roles-checkbox">Роли</label><input type="checkbox" name="copy-roles"
+                                                                    id="copy-roles-checkbox"><br>
+                <label for="copy-users-checkbox">Пользователи</label><input type="checkbox" name="copy-users"
+                                                                            id="copy-users-checkbox"><br>
+                <label for="copy-columns-checkbox">Колонки</label><input type="checkbox" name="copy-columns"
+                                                                         id="copy-columns-checkbox">
+            </div>
+
+        </div>
+        <div>
+            <button type="submit">Создать команду</button>
     </form>
 </div>
+<script type="text/javascript" th:src="@{/js/teamCreationScript.js}"></script>
 <div th:replace="~{fragments/footer}"></div>

@@ -52,4 +52,10 @@ public class TeamMember {
                         .build();
     }
 
+    public static TeamMember copyCreateOwner(User user, Role role) {
+        return builder().role(Role.copyRole(role))
+                        .user(user)
+                        .build();
+    }
+
 }

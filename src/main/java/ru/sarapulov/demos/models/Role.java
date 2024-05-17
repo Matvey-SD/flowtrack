@@ -119,4 +119,21 @@ public class Role {
         permissions[6] = f;
     }
 
+    public static Role copyRole(Role role) {
+        return Role.builder()
+                   .roleName(role.getRoleName())
+                   .permissions(role.getPermissions())
+                   .id(UUID.randomUUID())
+                   .build();
+    }
+
+    public static Role copyRoleToTeam(Role role, Team team) {
+        return Role.builder()
+                   .roleName(role.getRoleName())
+                   .permissions(role.getPermissions())
+                   .id(UUID.randomUUID())
+                   .team(team)
+                   .build();
+    }
+
 }

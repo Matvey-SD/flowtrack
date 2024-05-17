@@ -16,6 +16,7 @@ import ru.sarapulov.demos.repositories.TeamsRepository;
 import ru.sarapulov.demos.repositories.UsersRepository;
 import ru.sarapulov.demos.utils.UserUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,67 @@ public class TeamService {
         Role defaultRole = Role.createObserverRole(team);
         team.setRoles(List.of(defaultRole, owner.getRole()));
         log.info("Creating new team: {}, User: {}", teamName, user.getLogin());
+        teamsRepository.save(team);
+    }
+
+    public void createCopiedTeam(User user,
+                                 String teamName,
+                                 UUID teamToCopy,
+                                 boolean copyRoles,
+                                 boolean copyUsers,
+                                 boolean copyColumns) {
+        Team copyTeam = UserUtils.findTeamForUser(user, teamToCopy);
+        TeamMember owner;
+        if (copyRoles) {
+            owner = TeamMember.copyCreateOwner(user, copyTeam.getOwnerRole());
+        } else {
+            owner = TeamMember.createOwner(user);
+        }
+        Team team = Team.createTeam(teamName, owner);
+        owner.setTeam(team);
+        owner.getRole()
+             .setTeam(team);
+        if (copyRoles) {
+            List<Role> rolesToAdd = new ArrayList<>(List.of(owner.getRole()));
+            for (Role role : copyTeam.getRoles()) {
+                if (role.isOwner()) {
+                    continue;
+                }
+                Role copiedRole = Role.copyRoleToTeam(role, team);
+                rolesToAdd.add(copiedRole);
+            }
+            team.setRoles(rolesToAdd);
+        } else {
+            Role defaultRole = Role.createObserverRole(team);
+            team.setRoles(List.of(defaultRole, owner.getRole()));
+        }
+
+        if (copyUsers) {
+            List<TeamMember> members = new ArrayList<>(List.of(owner));
+            for (TeamMember member : copyTeam.getMembers()) {
+                if (member.getUser()
+                          .getLogin()
+                          .equals(user.getLogin())) {
+                    continue;
+                }
+                TeamMember addedUser = TeamMember.builder()
+                                                 .user(member.getUser())
+                                                 .team(team)
+                                                 .role(team.getDefaultRole())
+                                                 .build();
+                members.add(addedUser);
+            }
+            team.setMembers(members);
+        }
+
+        if (copyColumns) {
+            List<Column> columns = new ArrayList<>();
+            for (Column column : copyTeam.getColumns()) {
+                columns.add(Column.copyColumn(column, team));
+            }
+            team.setColumns(columns);
+        }
+
         teamsRepository.save(team);
     }
 
@@ -109,14 +171,16 @@ public class TeamService {
                 columns.get(i)
                        .setPosition(i - 1);
             }
-            columns.get(prevPos).setPosition(newPos);
+            columns.get(prevPos)
+                   .setPosition(newPos);
         }
         if (newPos < prevPos) {
             for (int i = newPos; i < prevPos; i++) {
                 columns.get(i)
                        .setPosition(i + 1);
             }
-            columns.get(prevPos).setPosition(newPos);
+            columns.get(prevPos)
+                   .setPosition(newPos);
         }
 
         teamsRepository.save(team);

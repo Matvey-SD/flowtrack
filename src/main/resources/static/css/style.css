@@ -98,3 +98,7 @@ label {
 .document {
     cursor: pointer;
 }
+
+.hidden {
+    display: none;
+}

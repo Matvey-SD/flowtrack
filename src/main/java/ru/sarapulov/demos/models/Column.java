@@ -66,4 +66,14 @@ public class Column {
         };
     }
 
+    public static Column copyColumn(Column column, Team team) {
+        return Column.builder()
+                     .position(column.getPosition())
+                     .columnType(column.getColumnType())
+                     .team(team)
+                     .name(column.getName())
+                     .id(UUID.randomUUID())
+                     .build();
+    }
+
 }
