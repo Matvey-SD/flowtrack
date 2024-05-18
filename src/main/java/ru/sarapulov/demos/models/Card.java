@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +54,10 @@ public class Card {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "card", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<CardDocument> documents;
 
+    private Long doingTime;
+
+    private Instant timerStart;
+
     public String getDoerLogin() {
         return doer == null ? "" : doer.getLogin();
     }
@@ -73,6 +78,34 @@ public class Card {
                                                     .compareTo(fileId) == 0)
                         .findFirst()
                         .orElseThrow();
+    }
+
+    public Long getCurrentTimeInWork() {
+        return (doingTime == null ? 0 : doingTime) + (timerStart == null ? 0 : Instant.now()
+                                                                                      .getEpochSecond()
+                                                                                   - timerStart.getEpochSecond());
+    }
+
+    public String getTimeInWorkInHHMMSSFormat() {
+        long fullTime = getCurrentTimeInWork();
+        long hr = fullTime / 3600 % 24;
+        String hrStr = hr < 10 ? "0" + hr : String.valueOf(hr);
+        long mn = fullTime / 60 % 60;
+        String mnStr = mn < 10 ? "0" + mn : String.valueOf(mn);
+        long sc = fullTime % 60;
+        String scStr = sc < 10 ? "0" + sc : String.valueOf(sc);
+        return hrStr + ":" + mnStr + ":" + scStr;
+    }
+
+    public String getTimeToDoInHHMMSSFormat() {
+        int hr = timeToDo.intValue();
+        String hrStr = hr < 10 ? "0" + hr : String.valueOf(hr);
+        String mn = timeToDo - timeToDo.intValue() < 0.1 ? "00" : "30";
+        return hrStr + ":" + mn + ":00";
+    }
+
+    public boolean isTimed() {
+        return !(timerStart == null);
     }
 
 }

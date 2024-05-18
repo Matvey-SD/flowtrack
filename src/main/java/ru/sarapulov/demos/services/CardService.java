@@ -53,7 +53,13 @@ public class CardService {
                              .id(savedId)
                              .cardName(cardDto.getCardDesc())
                              .column(column)
+                             .doingTime(0L)
                              .build();
+
+        if (column.getColumnType() == 1) {
+            cardToAdd.setTimerStart(Instant.now());
+        }
+
         column.getCards()
               .add(cardToAdd);
         teamsRepository.save(team);
@@ -101,7 +107,7 @@ public class CardService {
         Card card = getCardIfPermittedOrThrow(user, cardPositionUpdate.getTeamId(), cardPositionUpdate.getCardId());
         Column prevColumn = card.getColumn();
         if (prevColumn.getId()
-                      .compareTo(cardPositionUpdate.getCardId()) == 0) {
+                      .compareTo(cardPositionUpdate.getColumnId()) == 0) {
             return;
         }
 
@@ -114,6 +120,18 @@ public class CardService {
                                      .orElseThrow();
 
         card.setColumn(newColumn);
+        if (newColumn.getColumnType() == 1 && prevColumn.getColumnType() != 1) {
+            card.setTimerStart(Instant.now());
+        }
+
+        if (newColumn.getColumnType() != 1 && prevColumn.getColumnType() == 1) {
+            card.setDoingTime((card.getDoingTime() == null ? 0 : card.getDoingTime()) + (Instant.now()
+                                                                                                .getEpochSecond()
+                                                                                             - card.getTimerStart()
+                                                                                                   .getEpochSecond()));
+
+            card.setTimerStart(null);
+        }
 
         cardsRepository.save(card);
     }

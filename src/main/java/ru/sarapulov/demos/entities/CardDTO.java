@@ -33,6 +33,10 @@ public class CardDTO {
 
     private Double timeToDo;
 
+    private Long timeInWork;
+
+    private boolean isTimed;
+
     public static CardDTO getDTOFrom(Card card) {
         return CardDTO.builder()
                       .cardName(card.getCardName())
@@ -49,6 +53,8 @@ public class CardDTO {
                       .doer(card.getDoerLogin())
                       .checker(card.getCheckerLogin())
                       .timeToDo(card.getTimeToDo())
+                      .isTimed(card.isTimed())
+                      .timeInWork(card.getCurrentTimeInWork())
                       .build();
     }
 

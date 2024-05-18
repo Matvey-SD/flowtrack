@@ -82,12 +82,18 @@ function openCardModal(id) {
         modal.classList.add("active");
         document.body.classList.add("inactive");
         clearCardModal();
+        if (r['timed']) {
+            document.getElementById('card-modal-counter').classList.add("enabled-timer")
+        } else {
+            document.getElementById('card-modal-counter').classList.remove("enabled-timer")
+        }
         document.getElementById("card-modal-id").value = id;
         document.getElementById("card-modal-name").value = r['cardName'];
         document.getElementById("card-modal-desc").value = r['cardDescription'];
         document.getElementById("card-modal-doer").value = r['doer'];
         document.getElementById("card-modal-checker").value = r['checker'];
         document.getElementById("card-modal-time-to-do").value = r['timeToDo'];
+        document.getElementById('card-modal-counter').innerText = transformTimeInSecondsToHMSFormat(r['timeInWork'])
 
         for (const comment of r['comments']) {
             let login = document.createElement('div');
@@ -170,6 +176,7 @@ function clearCardModal() {
     document.getElementById("card-modal-comments").replaceChildren();
     document.getElementById("card-modal-documents").replaceChildren();
     document.getElementById("card-modal-time-to-do").value = 0;
+    document.getElementById('card-modal-counter').classList.remove("enabled-timer");
 }
 
 const cardsWrappers = document.getElementsByClassName("cards-wrapper");
@@ -203,6 +210,13 @@ for (const cardsWrapper of cardsWrappers) {
 
 function updateCardPosition(card) {
     let columnId = card.parentElement.id.substring(14);
+    if (card.parentElement.parentElement.classList.contains('inwork')) {
+        if (card.classList.contains('user-card'))
+            document.getElementById('card-timer-' + card.id).classList.add('enabled-timer');
+    } else {
+        if (card.classList.contains('user-card'))
+            document.getElementById('card-timer-' + card.id).classList.remove('enabled-timer');
+    }
     console.log('Updating card with id', card.id, 'to be in column with id', columnId);
 
     makeRequest('update-card-position', {
@@ -551,4 +565,29 @@ function hideAllMenus() {
     for (const menu of menus) {
         menu.classList.remove("active");
     }
+}
+
+function updateTimers() {
+    let timers = document.getElementsByClassName("enabled-timer");
+
+    for (const timer of timers) {
+        let times = timer.innerHTML.split(":")
+        let time = Number.parseInt(times[0]) * 3600 + Number.parseInt(times[1]) * 60 + Number.parseInt(times[2])
+        time++;
+        timer.innerHTML = transformTimeInSecondsToHMSFormat(time);
+    }
+}
+
+setInterval(updateTimers, 1000)
+
+function transformTimeInSecondsToHMSFormat(time) {
+    return [
+        time / 3600 % 24 | 0,  // h
+        time / 60 % 60 | 0,    // m
+        time % 60              // s
+    ]
+        .map(function (i) {
+            return i < 10 ? '0' + i : i;
+        })
+        .join(':');
 }
