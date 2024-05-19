@@ -71,6 +71,14 @@ public class Team {
                       .toList();
     }
 
+    public List<Card> getAllTeamCards() {
+        return columns.stream()
+                      .flatMap(column -> column.getCards()
+                                               .stream())
+                      .toList();
+
+    }
+
 }
 
 

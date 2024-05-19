@@ -57,7 +57,7 @@ public class Role {
                                 .build();
     }
 
-    public boolean isCardCreationAvailableInColumn(Column column) {
+    public boolean isCardEditInColumnAvailable(Column column) {
         return isCardEditAvailable() || columnPermissions.stream()
                                                          .anyMatch(col -> column.getId()
                                                                                 .compareTo(col.getId()) == 0);

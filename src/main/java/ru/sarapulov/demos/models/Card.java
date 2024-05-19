@@ -30,7 +30,7 @@ public class Card {
     @Id
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Column column;
 
     private String cardName;
@@ -46,12 +46,12 @@ public class Card {
     @ManyToOne
     private User doer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User checker;
 
     private Double timeToDo;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "card", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "card", fetch = FetchType.EAGER)
     private List<CardDocument> documents;
 
     private Long doingTime;

@@ -46,7 +46,7 @@ public class Column {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Team team;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "column", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "column", fetch = FetchType.EAGER)
     private List<Card> cards;
 
     public Optional<Card> getCardById(UUID cardId) {

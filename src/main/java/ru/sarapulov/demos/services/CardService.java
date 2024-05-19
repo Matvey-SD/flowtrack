@@ -5,22 +5,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sarapulov.demos.entities.CardAddingRequestDTO;
 import ru.sarapulov.demos.entities.CardChangeDTO;
+import ru.sarapulov.demos.entities.CardDeletingRequestDTO;
 import ru.sarapulov.demos.entities.CardPositionUpdateDTO;
 import ru.sarapulov.demos.entities.CardRequestDTO;
 import ru.sarapulov.demos.entities.CommentAddingDTO;
 import ru.sarapulov.demos.exceptions.UnauthorisedAccessException;
 import ru.sarapulov.demos.models.Card;
+import ru.sarapulov.demos.models.CardDocument;
 import ru.sarapulov.demos.models.Column;
 import ru.sarapulov.demos.models.Comment;
 import ru.sarapulov.demos.models.Role;
 import ru.sarapulov.demos.models.Team;
+import ru.sarapulov.demos.models.TeamMember;
 import ru.sarapulov.demos.models.User;
+import ru.sarapulov.demos.repositories.CardDocumentsRepository;
 import ru.sarapulov.demos.repositories.CardsRepository;
 import ru.sarapulov.demos.repositories.TeamsRepository;
 import ru.sarapulov.demos.repositories.UsersRepository;
 import ru.sarapulov.demos.utils.UserUtils;
 
+import java.io.File;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -31,6 +37,8 @@ public class CardService {
     private TeamsRepository teamsRepository;
 
     private CardsRepository cardsRepository;
+
+    private CardDocumentsRepository cardDocumentsRepository;
 
     private UsersRepository usersRepository;
 
@@ -44,7 +52,7 @@ public class CardService {
                             .findFirst()
                             .orElseThrow();
 
-        if (!requesterRole.isCardCreationAvailableInColumn(column)) {
+        if (!requesterRole.isCardEditInColumnAvailable(column)) {
             throw new UnauthorisedAccessException();
         }
 
@@ -148,6 +156,32 @@ public class CardService {
         card.getComments()
             .add(commentToAdd);
         cardsRepository.save(card);
+    }
+
+    public void deleteCardIfAvailable(User requester, CardDeletingRequestDTO cardDeletingDTO) {
+        Card card = getCardIfPermittedOrThrow(requester, cardDeletingDTO.getTeamId(), cardDeletingDTO.getCardId());
+        TeamMember requesterMembership = UserUtils.getUserMembershipInTeam(requester, cardDeletingDTO.getTeamId());
+
+        if (!requesterMembership.getRole()
+                               .isCardEditInColumnAvailable(card.getColumn())) {
+            return;
+        }
+
+        deleteCard(card);
+    }
+
+    public void  deleteCards(Collection<Card> cards) {
+        cards.forEach(this::deleteCard);
+    }
+
+    public void deleteCard(Card card) {
+        card.getDocuments().forEach(this::deleteDocument);
+        cardsRepository.delete(card);
+    }
+
+    private void deleteDocument(CardDocument document) {
+        new File(document.getPath()).delete();
+        cardDocumentsRepository.delete(document);
     }
 
     private Card getCardIfPermittedOrThrow(User requester, UUID teamId, UUID cardId) {

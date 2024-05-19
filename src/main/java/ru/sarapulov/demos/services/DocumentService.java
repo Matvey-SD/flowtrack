@@ -16,6 +16,7 @@ import ru.sarapulov.demos.models.Team;
 import ru.sarapulov.demos.models.TeamMember;
 import ru.sarapulov.demos.models.User;
 import ru.sarapulov.demos.repositories.CardsRepository;
+import ru.sarapulov.demos.repositories.DocumentsRepository;
 import ru.sarapulov.demos.repositories.TeamsRepository;
 import ru.sarapulov.demos.utils.UserUtils;
 
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +36,8 @@ public class DocumentService {
     private TeamsRepository teamsRepository;
 
     private CardsRepository cardsRepository;
+
+    private DocumentsRepository documentsRepository;
 
     public UUID saveDocument(User user, MultipartFile file, UUID teamId) {
         TeamMember teamMember = UserUtils.getUserMembershipInTeam(user, teamId);
@@ -73,7 +77,7 @@ public class DocumentService {
                         .findFirst()
                         .orElseThrow();
         Column column = card.getColumn();
-        if (!(requesterRole.isCardEditAvailable() || requesterRole.isCardCreationAvailableInColumn(column))) {
+        if (!(requesterRole.isCardEditAvailable() || requesterRole.isCardEditInColumnAvailable(column))) {
             throw new UnauthorisedAccessException();
         }
 
@@ -149,6 +153,15 @@ public class DocumentService {
         }
 
         throw new UnauthorisedAccessException();
+    }
+
+    public void deleteAll(Collection<Document> documentsToDelete) {
+        documentsToDelete.forEach(this::delete);
+    }
+
+    public void delete(Document documentToDelete) {
+        new File(documentToDelete.getPath()).delete();
+        documentsRepository.delete(documentToDelete);
     }
 
 }

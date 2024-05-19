@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.sarapulov.demos.entities.CardAddingRequestDTO;
 import ru.sarapulov.demos.entities.CardChangeDTO;
 import ru.sarapulov.demos.entities.CardDTO;
+import ru.sarapulov.demos.entities.CardDeletingRequestDTO;
 import ru.sarapulov.demos.entities.CardPositionUpdateDTO;
 import ru.sarapulov.demos.entities.CardRequestDTO;
 import ru.sarapulov.demos.entities.CommentAddingDTO;
@@ -81,6 +82,18 @@ public class RestCardController {
                  user.getLogin(),
                  commentAddingDTO.getCardId());
         cardService.saveComment(user, commentAddingDTO);
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("delete-card")
+    public ResponseEntity<Boolean> deleteCard(@AuthenticationPrincipal User user,
+                                              @RequestBody CardDeletingRequestDTO cardDeletingDTO) {
+        user = usersService.updateUser(user);
+        log.info("Trying to delete card with id {} from team with id {}",
+                 cardDeletingDTO.getCardId(),
+                 cardDeletingDTO.getTeamId());
+        cardService.deleteCardIfAvailable(user, cardDeletingDTO);
+
         return ResponseEntity.ok(true);
     }
 

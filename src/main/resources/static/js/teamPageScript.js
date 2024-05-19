@@ -162,6 +162,11 @@ function saveCardComment() {
     makeRequest("save-comment", {"cardId": id, "comment": comment, "teamId": team});
 }
 
+function deleteCardModal() {
+    let id = document.getElementById("card-modal-id").value;
+    makeRequest("delete-card", {"cardId": id, "teamId": team}).then(() => closeCardModal())
+}
+
 function closeCardModal() {
     let modal = document.getElementById("card-modal");
     modal.classList.remove("active");

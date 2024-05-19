@@ -11,6 +11,10 @@ import ru.sarapulov.demos.models.Role;
 import ru.sarapulov.demos.models.Team;
 import ru.sarapulov.demos.models.TeamMember;
 import ru.sarapulov.demos.models.User;
+import ru.sarapulov.demos.repositories.CardDocumentsRepository;
+import ru.sarapulov.demos.repositories.CardsRepository;
+import ru.sarapulov.demos.repositories.ColumnsRepository;
+import ru.sarapulov.demos.repositories.RolesRepository;
 import ru.sarapulov.demos.repositories.TeamMembersRepository;
 import ru.sarapulov.demos.repositories.TeamsRepository;
 import ru.sarapulov.demos.repositories.UsersRepository;
@@ -28,6 +32,12 @@ public class TeamService {
     private TeamsRepository teamsRepository;
 
     private TeamMembersRepository teamMembersRepository;
+
+    private RolesRepository rolesRepository;
+
+    private DocumentService documentService;
+
+    private CardService cardService;
 
     private UsersRepository usersRepository;
 
@@ -195,6 +205,9 @@ public class TeamService {
         Team teamToDelete = requesterMembership.getTeam();
 
         teamMembersRepository.deleteAll(teamToDelete.getMembers());
+        cardService.deleteCards(teamToDelete.getAllTeamCards());
+        documentService.deleteAll(teamToDelete.getDocuments());
+        rolesRepository.deleteAll(teamToDelete.getRoles());
         teamsRepository.delete(teamToDelete);
 
     }
