@@ -11,9 +11,6 @@ import ru.sarapulov.demos.models.Role;
 import ru.sarapulov.demos.models.Team;
 import ru.sarapulov.demos.models.TeamMember;
 import ru.sarapulov.demos.models.User;
-import ru.sarapulov.demos.repositories.CardDocumentsRepository;
-import ru.sarapulov.demos.repositories.CardsRepository;
-import ru.sarapulov.demos.repositories.ColumnsRepository;
 import ru.sarapulov.demos.repositories.RolesRepository;
 import ru.sarapulov.demos.repositories.TeamMembersRepository;
 import ru.sarapulov.demos.repositories.TeamsRepository;
@@ -40,6 +37,8 @@ public class TeamService {
     private CardService cardService;
 
     private UsersRepository usersRepository;
+
+    private MailSendService mailSendService;
 
     public void createTeam(User user, String teamName) {
         TeamMember owner = TeamMember.createOwner(user);
@@ -131,6 +130,9 @@ public class TeamService {
         team.getMembers()
             .add(addedUser);
         teamsRepository.save(team);
+        mailSendService.sendMessageToUserIfPossible(user,
+                                                    "Приглашение в команду " + team.getTeam_name(),
+                                                    "Вы были приглашены в команду " + team.getTeam_name());
     }
 
     public UUID addColumnToTeam(User requester, ColumnAddingRequestDTO columnAddingRequest) {
@@ -210,6 +212,15 @@ public class TeamService {
         rolesRepository.deleteAll(teamToDelete.getRoles());
         teamsRepository.delete(teamToDelete);
 
+        teamToDelete.getMembers()
+                    .stream()
+                    .map(TeamMember::getUser)
+                    .forEach(user -> mailSendService.sendMessageToUserIfPossible(user,
+                                                                                 "Удаление команды "
+                                                                                     + teamToDelete.getTeam_name(),
+                                                                                 "Информируем вас о том, что команда "
+                                                                                     + teamToDelete.getTeam_name()
+                                                                                     + ", в которой вы состояли, была удалена."));
     }
 
 }

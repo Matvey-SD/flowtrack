@@ -42,6 +42,8 @@ public class CardService {
 
     private UsersRepository usersRepository;
 
+    private MailSendService mailSendService;
+
     public UUID addCardToColumn(User requester, CardAddingRequestDTO cardDto) {
         Role requesterRole = UserUtils.getUserRoleInTeam(requester, cardDto.getTeamId());
         Team team = teamsRepository.findTeamById(cardDto.getTeamId());
@@ -109,6 +111,21 @@ public class CardService {
         }
 
         cardsRepository.save(card);
+        if (card.getDoer() != null) {
+            mailSendService.sendMessageToUserIfPossible(card.getDoer(),
+                                                        "Изменения в карточке " + card.getCardName(),
+                                                        "В карточке " + card.getCardName()
+                                                            + ", в которой вы являетесь исполнителем, произошли изменения");
+        }
+        if (card.getChecker() != null && (card.getDoer() == null || card.getDoer()
+                                                                        .getLogin()
+                                                                        .equals(card.getChecker()
+                                                                                    .getLogin()))) {
+            mailSendService.sendMessageToUserIfPossible(card.getChecker(),
+                                                        "Изменения в карточке " + card.getCardName(),
+                                                        "В карточке " + card.getCardName()
+                                                            + ", в которой вы являетесь проверяющим, произошли изменения");
+        }
     }
 
     public void updateCardPosition(User user, CardPositionUpdateDTO cardPositionUpdate) {
@@ -163,19 +180,20 @@ public class CardService {
         TeamMember requesterMembership = UserUtils.getUserMembershipInTeam(requester, cardDeletingDTO.getTeamId());
 
         if (!requesterMembership.getRole()
-                               .isCardEditInColumnAvailable(card.getColumn())) {
+                                .isCardEditInColumnAvailable(card.getColumn())) {
             return;
         }
 
         deleteCard(card);
     }
 
-    public void  deleteCards(Collection<Card> cards) {
+    public void deleteCards(Collection<Card> cards) {
         cards.forEach(this::deleteCard);
     }
 
     public void deleteCard(Card card) {
-        card.getDocuments().forEach(this::deleteDocument);
+        card.getDocuments()
+            .forEach(this::deleteDocument);
         cardsRepository.delete(card);
     }
 
