@@ -113,18 +113,20 @@ public class CardService {
         cardsRepository.save(card);
         if (card.getDoer() != null) {
             mailSendService.sendMessageToUserIfPossible(card.getDoer(),
-                                                        "Изменения в карточке " + card.getCardName(),
-                                                        "В карточке " + card.getCardName()
-                                                            + ", в которой вы являетесь исполнителем, произошли изменения");
+                                                        String.format("Изменения в карточке %s", card.getCardName()),
+                                                        String.format(
+                                                            "В карточке %s, в которой вы являетесь исполнителем, произошли изменения",
+                                                            card.getCardName()));
         }
         if (card.getChecker() != null && (card.getDoer() == null || card.getDoer()
                                                                         .getLogin()
                                                                         .equals(card.getChecker()
                                                                                     .getLogin()))) {
             mailSendService.sendMessageToUserIfPossible(card.getChecker(),
-                                                        "Изменения в карточке " + card.getCardName(),
-                                                        "В карточке " + card.getCardName()
-                                                            + ", в которой вы являетесь проверяющим, произошли изменения");
+                                                        String.format("Изменения в карточке %s", card.getCardName()),
+                                                        String.format(
+                                                            "В карточке %s, в которой вы являетесь проверяющим, произошли изменения",
+                                                            card.getCardName()));
         }
     }
 
@@ -159,6 +161,15 @@ public class CardService {
         }
 
         cardsRepository.save(card);
+
+        if (newColumn.getColumnType() == 2 && card.getChecker() != null) {
+            mailSendService.sendMessageToUserIfPossible(card.getChecker(),
+                                                        String.format("Задача %s назначена на проверку", card.getCardName()),
+                                                        String.format(
+                                                            "Задача %s, в которой вы числитесь проверяющим, перемещена в колонку %s, выделенной для проверки",
+                                                            card.getCardName(),
+                                                            newColumn.getName()));
+        }
     }
 
     public void saveComment(User requester, CommentAddingDTO commentAddingDTO) {

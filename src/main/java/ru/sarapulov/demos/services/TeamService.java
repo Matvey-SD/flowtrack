@@ -131,8 +131,8 @@ public class TeamService {
             .add(addedUser);
         teamsRepository.save(team);
         mailSendService.sendMessageToUserIfPossible(user,
-                                                    "Приглашение в команду " + team.getTeam_name(),
-                                                    "Вы были приглашены в команду " + team.getTeam_name());
+                                                    String.format("Приглашение в команду %s", team.getTeam_name()),
+                                                    String.format("Вы были приглашены в команду %s", team.getTeam_name()));
     }
 
     public UUID addColumnToTeam(User requester, ColumnAddingRequestDTO columnAddingRequest) {
@@ -216,11 +216,11 @@ public class TeamService {
                     .stream()
                     .map(TeamMember::getUser)
                     .forEach(user -> mailSendService.sendMessageToUserIfPossible(user,
-                                                                                 "Удаление команды "
-                                                                                     + teamToDelete.getTeam_name(),
-                                                                                 "Информируем вас о том, что команда "
-                                                                                     + teamToDelete.getTeam_name()
-                                                                                     + ", в которой вы состояли, была удалена."));
+                                                                                 String.format("Удаление команды %s",
+                                                                                               teamToDelete.getTeam_name()),
+                                                                                 String.format(
+                                                                                     "Информируем вас о том, что команда %s, в которой вы состояли, была удалена.",
+                                                                                     teamToDelete.getTeam_name())));
     }
 
 }
