@@ -1,8 +1,7 @@
-let team = new URLSearchParams(window.location.search).get("id");
+const team = new URLSearchParams(window.location.search).get("id");
 
 async function makeRequest(path, content) {
-    //TODO localhost заменить на глобальную переменную
-    const response = await fetch('http://localhost:8080/api/' + path, {
+    const response = await fetch(host + '/api/' + path, {
         method: 'POST', body: JSON.stringify(content), headers: {
             'Content-Type': 'application/json'
         }
@@ -302,7 +301,7 @@ async function saveDocument() {
     data.append("file", file);
     data.append("team-id", team);
     let path = "upload-file";
-    const response = await fetch('http://localhost:8080/api/' + path, {
+    const response = await fetch(host + '/api/' + path, {
         method: 'POST', body: data
     });
 
@@ -312,7 +311,7 @@ async function saveDocument() {
 async function downloadDocument(id) {
     let content = {"teamId": team, "documentId": id};
 
-    const response = await fetch('http://localhost:8080/api/download-file', {
+    const response = await fetch(host + '/api/download-file', {
         method: 'POST', body: JSON.stringify(content), headers: {
             'Content-Type': 'application/json'
         }
@@ -516,7 +515,7 @@ async function saveDocumentCard() {
     data.append("team-id", team);
     data.append("card-id", cardId);
     let path = "upload-file-card";
-    const response = await fetch('http://localhost:8080/api/' + path, {
+    const response = await fetch(host + '/api/' + path, {
         method: 'POST', body: data
     });
 

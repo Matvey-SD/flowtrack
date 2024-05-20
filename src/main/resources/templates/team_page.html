@@ -13,4 +13,7 @@
 <div th:replace="~{fragments/teampage/cardmodal}"></div>
 <div th:replace="~{fragments/teampage/rolemodal}"></div>
 <script type="text/javascript" th:src="@{/js/teamPageScript.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    const host = [[${@environment.getProperty("HOST")}]];
+</script>
 <div th:replace="~{fragments/footer}"></div>
