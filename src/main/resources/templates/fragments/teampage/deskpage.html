@@ -28,6 +28,7 @@
                 </div>
                 <button onclick="addCardToColumn(this.id)" class="add-card-button" th:id="${column.getId()}">Добавить карточку
                 </button>
+                <button onclick="deleteColumn(this.previousElementSibling.id)">Удалить колонку</button>
             </div>
         </div>
     </div>

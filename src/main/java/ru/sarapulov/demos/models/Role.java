@@ -39,7 +39,7 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private List<TeamMember> teamMember;
 
-    @ManyToMany(mappedBy = "permittedRoles", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "permittedRoles", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Column> columnPermissions;
 
     public static Role createOwnerRole() {

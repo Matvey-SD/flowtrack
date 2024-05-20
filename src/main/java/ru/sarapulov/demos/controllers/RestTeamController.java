@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sarapulov.demos.entities.ColumnAddingRequestDTO;
+import ru.sarapulov.demos.entities.ColumnDeletionDTO;
 import ru.sarapulov.demos.entities.ColumnPositionChangingDTO;
 import ru.sarapulov.demos.entities.UserAddingRequestDTO;
 import ru.sarapulov.demos.models.User;
@@ -56,6 +57,16 @@ public class RestTeamController {
                  positionChangingDTO.getTeamId(),
                  positionChangingDTO.getPosition());
         teamService.changeColumnPosition(user, positionChangingDTO);
+
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("delete-column")
+    public ResponseEntity<Boolean> deleteColumn(@AuthenticationPrincipal User user,
+                                                @RequestBody ColumnDeletionDTO columnDeletionDTO) {
+        user = usersService.updateUser(user);
+        log.info("Trying to delete column {} in team {}", columnDeletionDTO.getColumnId(), columnDeletionDTO.getTeamId());
+        teamService.deleteColumn(user, columnDeletionDTO);
 
         return ResponseEntity.ok(true);
     }

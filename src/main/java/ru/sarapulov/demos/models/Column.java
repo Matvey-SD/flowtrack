@@ -38,12 +38,12 @@ public class Column {
 
     private int position;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "column_permissions", joinColumns = {@JoinColumn(name = "column_id")},
                inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> permittedRoles;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Team team;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "column", fetch = FetchType.EAGER)

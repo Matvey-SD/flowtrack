@@ -28,6 +28,7 @@ public class TeamController {
 
     @GetMapping("/team-creation")
     public String teamCreationPage(@AuthenticationPrincipal User user, Model model) {
+        user = userService.updateUser(user);
         modelService.setPageAttributes(model, "Создание команды", user);
         return "team_creation_page";
     }

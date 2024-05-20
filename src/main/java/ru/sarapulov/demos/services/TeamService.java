@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sarapulov.demos.entities.ColumnAddingRequestDTO;
+import ru.sarapulov.demos.entities.ColumnDeletionDTO;
 import ru.sarapulov.demos.entities.ColumnPositionChangingDTO;
 import ru.sarapulov.demos.exceptions.UnauthorisedAccessException;
 import ru.sarapulov.demos.models.Column;
@@ -11,6 +12,7 @@ import ru.sarapulov.demos.models.Role;
 import ru.sarapulov.demos.models.Team;
 import ru.sarapulov.demos.models.TeamMember;
 import ru.sarapulov.demos.models.User;
+import ru.sarapulov.demos.repositories.ColumnsRepository;
 import ru.sarapulov.demos.repositories.RolesRepository;
 import ru.sarapulov.demos.repositories.TeamMembersRepository;
 import ru.sarapulov.demos.repositories.TeamsRepository;
@@ -33,6 +35,8 @@ public class TeamService {
     private RolesRepository rolesRepository;
 
     private DocumentService documentService;
+
+    private ColumnsRepository columnsRepository;
 
     private CardService cardService;
 
@@ -198,6 +202,18 @@ public class TeamService {
         teamsRepository.save(team);
     }
 
+    public void deleteColumn(User requester, ColumnDeletionDTO deletionDTO) {
+        UUID teamId = deletionDTO.getTeamId();
+        Role requesterRole = UserUtils.getUserRoleInTeam(requester, teamId);
+        if (!requesterRole.isColumnEditAvailable()) {
+            throw new UnauthorisedAccessException();
+        }
+        Column columnToDelete = requesterRole.getTeam()
+                                             .getColumn(deletionDTO.getColumnId());
+        cardService.deleteCards(columnToDelete.getCards());
+        columnsRepository.delete(columnToDelete);
+    }
+
     public void deleteTeam(User requester, UUID teamId) {
         TeamMember requesterMembership = UserUtils.getUserMembershipInTeam(requester, teamId);
         if (!requesterMembership.getRole()
@@ -208,6 +224,7 @@ public class TeamService {
 
         teamMembersRepository.deleteAll(teamToDelete.getMembers());
         cardService.deleteCards(teamToDelete.getAllTeamCards());
+        columnsRepository.deleteAll(teamToDelete.getColumns());
         documentService.deleteAll(teamToDelete.getDocuments());
         rolesRepository.deleteAll(teamToDelete.getRoles());
         teamsRepository.delete(teamToDelete);
@@ -215,12 +232,15 @@ public class TeamService {
         teamToDelete.getMembers()
                     .stream()
                     .map(TeamMember::getUser)
-                    .forEach(user -> mailSendService.sendMessageToUserIfPossible(user,
-                                                                                 String.format("Удаление команды %s",
-                                                                                               teamToDelete.getTeam_name()),
-                                                                                 String.format(
-                                                                                     "Информируем вас о том, что команда %s, в которой вы состояли, была удалена.",
-                                                                                     teamToDelete.getTeam_name())));
+                    .forEach(user -> notifyDeletion(user, teamToDelete));
+    }
+
+    private void notifyDeletion(User user, Team teamToDelete) {
+        mailSendService.sendMessageToUserIfPossible(user,
+                                                    String.format("Удаление команды %s", teamToDelete.getTeam_name()),
+                                                    String.format(
+                                                        "Информируем вас о том, что команда %s, в которой вы состояли, была удалена.",
+                                                        teamToDelete.getTeam_name()));
     }
 
 }

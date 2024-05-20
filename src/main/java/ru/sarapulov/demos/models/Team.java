@@ -36,7 +36,7 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<TeamMember> members;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Column> columns;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true)
@@ -77,6 +77,14 @@ public class Team {
                                                .stream())
                       .toList();
 
+    }
+
+    public Column getColumn(UUID id) {
+        return columns.stream()
+                      .filter(column -> column.getId()
+                                              .compareTo(id) == 0)
+                      .findFirst()
+                      .orElseThrow();
     }
 
 }

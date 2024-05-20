@@ -62,6 +62,14 @@ function addColumnIfPossible() {
     })
 }
 
+function deleteColumn(id) {
+    if (!confirm("Вы уверены что хотите удалить колонку?"))
+        return;
+    makeRequest('delete-column', {'teamId': team, 'columnId': id}).then(() => {
+        console.log("Удалено");
+    })
+}
+
 
 function addCardToColumn(id) {
     let cardDesc = document.getElementById("card-" + id).value;
@@ -162,6 +170,8 @@ function saveCardComment() {
 }
 
 function deleteCardModal() {
+    if (!confirm("Вы уверены что хотите удалить задачу?"))
+        return;
     let id = document.getElementById("card-modal-id").value;
     makeRequest("delete-card", {"cardId": id, "teamId": team}).then(() => closeCardModal())
 }
