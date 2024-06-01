@@ -27,8 +27,6 @@ public class Document {
 
     private String fileName;
 
-    private String type;
-
     private String path;
 
     private Long size;
