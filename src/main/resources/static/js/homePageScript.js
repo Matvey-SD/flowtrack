@@ -14,7 +14,15 @@ function updateUserIfPossible() {
         console.log(myJson);
         //window.location.reload();
     }
-    userAction()
+    userAction().then(() => hideUserSettings())
 }
 
-document.getElementById("submit-user-button").addEventListener("click", updateUserIfPossible);
+function showUserSettings() {
+    document.getElementById("user-settings-button").classList.add("hidden");
+    document.getElementById("user-settings").classList.remove("hidden");
+}
+
+function hideUserSettings() {
+    document.getElementById("user-settings").classList.add("hidden");
+    document.getElementById("user-settings-button").classList.remove("hidden");
+}

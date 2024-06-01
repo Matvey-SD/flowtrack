@@ -15,7 +15,10 @@
         <button type="submit">Создать команду</button>
     </a>
 </div>
-<div class="mb-3">
+<div>
+    <button id="user-settings-button" onclick="showUserSettings()">Показать настройки пользователя</button>
+</div>
+<div id="user-settings" class="mb-3 hidden">
     <div class="mb-3 form-floating">
         <input autocomplete="off" class="form-control" name="mail" id="mail" th:value="${user.getMail()}">
         <label for="mail">Email пользователя</label>
@@ -24,7 +27,10 @@
         <input autocomplete="off" class="form-control" name="fullName" id="fullName" th:value="${user.getFullName()}">
         <label for="fullName">ФИО пользователя</label>
     </div>
-    <button id="submit-user-button" class="btn btn-success w-100">Обновить данные пользователя</button>
+    <button onclick="updateUserIfPossible()" id="submit-user-button" class="btn btn-success w-100 mb-3">Обновить данные
+        пользователя
+    </button>
+    <button onclick="hideUserSettings()" class="btn btn-warning w-100">Скрыть настройки пользователя</button>
 </div>
 <script type="text/javascript" th:src="@{/js/homePageScript.js}"></script>
 <div th:replace="~{fragments/footer}"></div>
